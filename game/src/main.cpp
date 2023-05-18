@@ -8,6 +8,7 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sunshine");
     Vector2 position = { 100,500 };
     Vector2 velocity = {10,0};
+    Vector2 acceleration = { 0,10 };
     SetTargetFPS(144);
     float maxSpeed = 1000;
 
@@ -31,15 +32,19 @@ int main(void)
 
             ImGui::SliderFloat2("position", &(position.x), 0, SCREEN_WIDTH);
             ImGui::SliderFloat2("velocity", &(velocity.x), -maxSpeed, maxSpeed);
+            ImGui::SliderFloat2("acceleration", &(acceleration.x), -maxSpeed, maxSpeed);
+
            
 
             rlImGuiEnd();
         }
 
 
-        
         Vector2 displacement = velocity * dt;
-        position = position + displacement;
+     
+        
+        position = position + displacement + acceleration * dt * dt * 0.5f;
+        velocity = velocity + acceleration * dt;
 
         //position = GetMousePosition();
         DrawCircleV(position, 50, DARKGREEN);
