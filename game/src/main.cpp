@@ -60,7 +60,7 @@ int main(void)
         //////////////////////////////////////////////////////////////////////////////////////////DRAW/////////////////////////////////////////////////////////////////////////////////
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawText("Hello World!", 16, 9, 20, RED);
+        DrawText("Brandon Quach", 16, 9, 20, RED);
         DrawLine(45, 45, 90, 90, BLUE);//Draw A line
         DrawCircleV(circleB, 40, BLUE);//Draws circle that will follow the mouse
         DrawCircleV(circleA, 40, RED);//Draw a circle 
