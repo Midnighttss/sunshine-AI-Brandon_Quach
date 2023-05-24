@@ -89,19 +89,22 @@ int main(void)
         
         target= GetMousePosition();
         HideCursor();
-        
         acceleration = Normalize(target - position) * speed - velocity;
         velocity = velocity + acceleration * deltaTime;
         position = position + velocity * deltaTime + acceleration * deltaTime * deltaTime * 0.5f;
-
-
+        if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        {
+            acceleration = Normalize(target - position) * speed - velocity;
+            velocity = velocity + acceleration * deltaTime;
+            position = position - velocity * deltaTime - acceleration * deltaTime * deltaTime * 0.5f;
+        }
         position = WraparoundScreen(position);
         // Flee from another object in the world (e.g., a point)
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+        /*if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
 
         Vector2 fleeTargetPosition = { 500, 300 };
         Vector2 fleeAcceleration = flee(target, velocity, fleeTargetPosition, speed);
-        }
+        }*/
         DrawText("Hello World!", 16, 9, 20, RED);
 
         DrawCircleV(position, 50, GREEN);
