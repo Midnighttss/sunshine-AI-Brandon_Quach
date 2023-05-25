@@ -121,7 +121,7 @@ int main(void)
         }
         else
         {
-            acceleration = Normalize(position- targetPosition) * speed - velocity;
+            acceleration = Normalize(position - targetPosition) * speed - velocity;
         }
         
 
