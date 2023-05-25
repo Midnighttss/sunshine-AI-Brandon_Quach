@@ -7,8 +7,8 @@ Vector2 WraparoundScreen(Vector2 position)
 {
     Vector2 outPosition =
     {
-        (int)(position.x + SCREEN_WIDTH) % SCREEN_WIDTH,
-        (int)(position.y + SCREEN_HEIGHT) % SCREEN_HEIGHT
+        fmodf (position.x + SCREEN_WIDTH , SCREEN_WIDTH),
+        fmodf (position.y + SCREEN_HEIGHT, SCREEN_HEIGHT)
     };
 
     return outPosition;
@@ -62,12 +62,13 @@ int main(void)
     rlImGuiSetup(true); // Sets up imgui
 
     Vector2 position{ 100,100 };
-    Vector2 target;
+    Vector2 targetPosition;
     Vector2 velocity = { 10.0, 0.0 };
-    Vector2 acceleration = { 0.0f, 0.0f };
-    Vector2 displacementPositionTarget = position-target;
+    Vector2 acceleration = { 10.0f, 0.0f };
+    //Vector2 displacementPositionTarget = position- targetPosition;
     float speed = 500;
     float maxSpeed = 1000;
+    float maxAccel = 1000;
     bool useGUI = false;
     while (!WindowShouldClose())
     {
@@ -82,12 +83,12 @@ int main(void)
 
             ImGui::DragFloat2("Position", &(position.x), 0, SCREEN_WIDTH);
             ImGui::DragFloat2("Velocity", &(velocity.x), -maxSpeed, maxSpeed);
-            ImGui::DragFloat2("Acceleration", &(acceleration.x), -maxSpeed, maxSpeed);
+            ImGui::DragFloat2("Acceleration", &(acceleration.x),1, -maxAccel, maxAccel);
 
             rlImGuiEnd();
         }
         
-        target= GetMousePosition();
+        targetPosition = GetMousePosition();
         HideCursor();
 
 
@@ -97,6 +98,17 @@ int main(void)
 
         //Vector2 deltaV = acceleration * deltaTime;
         //velocity = velocity + deltaV;
+        
+        
+        
+        
+        /*Vector2 agentToTarget = targetPosition - position;
+        
+        Vector2 directionToTarget = Normalize(agentToTarget);
+        
+
+        acceleration = directionToTarget * maxAccel;*/
+
 
 
 
@@ -105,17 +117,17 @@ int main(void)
 
         if(IsMouseButtonUp(MOUSE_LEFT_BUTTON))
         {
-            acceleration = Normalize(target - position) * speed - velocity;
+            acceleration = Normalize(targetPosition - position) * speed - velocity;
         }
         else
         {
-            acceleration = Normalize(displacementPositionTarget) * speed - velocity;
+            acceleration = Normalize(position- targetPosition) * speed - velocity;
         }
         
 
 
 
-        acceleration = { 0,0 };
+        //acceleration = { 0,0 };
         position = WraparoundScreen(position);
 
 
@@ -124,17 +136,19 @@ int main(void)
         DrawText("Hello World!", 16, 9, 20, RED);
 
         DrawCircleV(position, 50, BLUE);
-        DrawCircleGradient(target.x, target.y, 50, LIGHTGRAY, BLACK);
+        DrawCircleGradient(targetPosition.x, targetPosition.y, 50, LIGHTGRAY, BLACK);
         
         DrawLineV(position, position + velocity, RED);
         DrawLineV(position, position + acceleration, GREEN);
+        DrawLineV(position, position + (targetPosition - position) *150, ORANGE);
 
 
-        DrawFPS(10, 100);
+
+        DrawFPS(1200, 10);
 
         EndDrawing();
     }
-
+    rlImGuiShutdown();
     CloseWindow();
     return 0;
 }
