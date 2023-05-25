@@ -46,12 +46,12 @@ public:
     float maxAcceleration;
 };
 
-Vector2 flee(const Vector2& agentPosition, const Vector2& agentVelocity, const Vector2& targetPosition, float maxAcceleration)
-{
-    Vector2 desiredVelocity = Normalize(agentPosition - targetPosition) * maxAcceleration;
-    Vector2 steer = desiredVelocity - agentVelocity;
-    return steer;
-}
+//Vector2 flee(const Vector2& agentPosition, const Vector2& agentVelocity, const Vector2& targetPosition, float maxAcceleration)
+//{
+//    Vector2 desiredVelocity = Normalize(agentPosition - targetPosition) * maxAcceleration;
+//    Vector2 steer = desiredVelocity - agentVelocity;
+//    return steer;
+//}
 
 
 int main(void)
@@ -61,13 +61,14 @@ int main(void)
 
     rlImGuiSetup(true); // Sets up imgui
 
-    Vector2 position = { 100, 100 };
-    Vector2 target = { 100, 400 };
-    Vector2 velocity = { 0.0f, 0.0f };
+    Vector2 position{ 100,100 };
+    Vector2 target;
+    Vector2 velocity = { 10.0, 0.0 };
     Vector2 acceleration = { 0.0f, 0.0f };
-    float speed = 500.0f;
-    float maxSpeed = 1000;
 
+    Vector2 displacementPositionTarget = position-target;
+    float speed = 500;
+    float maxSpeed = 1000;
     bool useGUI = false;
     while (!WindowShouldClose())
     {
@@ -80,30 +81,54 @@ int main(void)
         {
             rlImGuiBegin();
 
-            ImGui::SliderFloat2("Position", &(position.x), 0, SCREEN_WIDTH);
-            ImGui::SliderFloat2("Velocity", &(velocity.x), -maxSpeed, maxSpeed);
-            ImGui::SliderFloat2("Acceleration", &(acceleration.x), -maxSpeed, maxSpeed);
+            ImGui::DragFloat2("Position", &(position.x), 0, SCREEN_WIDTH);
+            ImGui::DragFloat2("Velocity", &(velocity.x), -maxSpeed, maxSpeed);
+            ImGui::DragFloat2("Acceleration", &(acceleration.x), -maxSpeed, maxSpeed);
 
             rlImGuiEnd();
         }
         
         target= GetMousePosition();
         HideCursor();
-        acceleration = Normalize(target - position) * speed - velocity;
-        velocity = velocity + acceleration * deltaTime;
+
+
+
+        //Vector2 displacement = velocity * deltaTime;
+        //position = position + displacement;
+
+        //Vector2 deltaV = acceleration * deltaTime;
+        //velocity = velocity + deltaV;
+
+
+
         position = position + velocity * deltaTime + acceleration * deltaTime * deltaTime * 0.5f;
-        if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        velocity = velocity + acceleration * deltaTime;
+
+        if(IsMouseButtonUp(MOUSE_LEFT_BUTTON))
         {
             acceleration = Normalize(target - position) * speed - velocity;
-            velocity = velocity + acceleration * deltaTime;
-            position = position - velocity * deltaTime - acceleration * deltaTime * deltaTime * 0.5f;
         }
+        else
+        {
+            acceleration = Normalize(displacementPositionTarget) * speed - velocity;
+        }
+        
+
+
+
+        acceleration = { 0,0 };
         position = WraparoundScreen(position);
+
+
+        
         
         DrawText("Hello World!", 16, 9, 20, RED);
 
-        DrawCircleV(position, 50, GREEN);
+        DrawCircleV(position, 50, BLUE);
         DrawCircleGradient(target.x, target.y, 50, LIGHTGRAY, BLACK);
+        
+        DrawLineV(position, position + velocity, RED);
+        DrawLineV(position, position + acceleration, GREEN);
 
 
         DrawFPS(10, 100);
