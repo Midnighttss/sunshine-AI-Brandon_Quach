@@ -117,7 +117,7 @@ int main(void)
 
         if(IsMouseButtonUp(MOUSE_LEFT_BUTTON))
         {
-            acceleration = Normalize(targetPosition - position) * speed - velocity;
+            acceleration = Normalize(targetPosition - position) * speed - velocity; 
         }
         else
         {
