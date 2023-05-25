@@ -65,7 +65,6 @@ int main(void)
     Vector2 target;
     Vector2 velocity = { 10.0, 0.0 };
     Vector2 acceleration = { 0.0f, 0.0f };
-
     Vector2 displacementPositionTarget = position-target;
     float speed = 500;
     float maxSpeed = 1000;
