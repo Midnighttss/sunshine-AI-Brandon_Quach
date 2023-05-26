@@ -64,7 +64,6 @@ int main(void)
     agent.rigidbody.velocity = { 10, 0 };
     agent.maxSpeed = 400.0f;
     agent.maxAcceleration = 800.0f;
-    agents.push_back(agent);
 
 
 
