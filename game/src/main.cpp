@@ -124,9 +124,15 @@ int main(void)
         DrawCircleV(ridgidbody.position, 50, BLUE);
         DrawCircleGradient(ridgidbody.mousePosition.x, ridgidbody.mousePosition.y, 50, LIGHTGRAY, BLACK);
         
+        DrawCircle(200,200, 50, BLUE);
+
+
+        
         DrawLineV(ridgidbody.position, ridgidbody.position + agent.rigidbody.velocity, RED);
         DrawLineV(ridgidbody.position, ridgidbody.position + acceleration, GREEN);
         DrawLineV(ridgidbody.position, ridgidbody.position + (ridgidbody.mousePosition - ridgidbody.position) *150, ORANGE);
+
+
 
 
 
