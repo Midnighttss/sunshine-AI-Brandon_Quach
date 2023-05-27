@@ -54,11 +54,8 @@ int main(void)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sunshine");
     SetTargetFPS(144);
-
+    bool collision = false;
     std::vector<Agent> agents;
-
-
-
     Agent agent;
     agent.rigidbody.position = { 400, 225 };
     agent.rigidbody.velocity = { 10, 0 };
@@ -130,8 +127,6 @@ int main(void)
 
         if (collision)
         {
-            DrawCircleV(circleA, 40, PURPLE);  //changes ball colour when collision occurs
-            DrawCircleV(circleB, 40, PURPLE);  //changes ball colour when collision occurs
 
         }
 
