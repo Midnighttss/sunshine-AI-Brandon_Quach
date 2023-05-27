@@ -125,7 +125,15 @@ int main(void)
         DrawCircleGradient(ridgidbody.mousePosition.x, ridgidbody.mousePosition.y, 50, LIGHTGRAY, BLACK);
         
         DrawCircle(200,200, 50, BLUE);
-        CheckCollisionCircles();
+
+        collision = CheckCollisionCircles(circleA, 40, circleB, 40);
+
+        if (collision)
+        {
+            DrawCircleV(circleA, 40, PURPLE);  //changes ball colour when collision occurs
+            DrawCircleV(circleB, 40, PURPLE);  //changes ball colour when collision occurs
+
+        }
 
         
         DrawLineV(ridgidbody.position, ridgidbody.position + agent.rigidbody.velocity, RED);
