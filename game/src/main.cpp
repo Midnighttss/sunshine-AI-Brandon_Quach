@@ -61,7 +61,7 @@ int main(void)
     agent.ridgidbody.velocity = { 10, 0 };
     agent.maxSpeed = 400.0f;
     agent.maxAcceleration = 800.0f;
-    Vector2 circleA = { SCREEN_WIDTH/2,SCREEN_HEIGHT/2 };
+    Ridgidbody circleA = { SCREEN_WIDTH/2,SCREEN_HEIGHT/2 };
     rlImGuiSetup(true); // Sets up imgui
     Ridgidbody ridgidbody;
     ridgidbody.mousePosition = GetMousePosition();
@@ -104,24 +104,20 @@ int main(void)
             acceleration = Normalize(ridgidbody.position - ridgidbody.mousePosition) * speed - agent.ridgidbody.velocity;
         }
        
+        if(CheckCollisionCircles(circleA.position, 65, ridgidbody.position, 65))
+        {
+            acceleration = Normalize(ridgidbody.position - circleA.position) * speed - agent.ridgidbody.velocity;
+        }
+
+
         ridgidbody.position = WraparoundScreen(ridgidbody.position);
  
         DrawText("Hello World!", 16, 9, 20, RED);
 
-        DrawCircleV(ridgidbody.position, 50, BLUE);
-        DrawCircleV(circleA, 50, RED);
+        DrawCircleV(ridgidbody.position, 30, BLUE);
+        DrawCircleV(circleA.position, 50, RED);
         DrawCircleGradient(ridgidbody.mousePosition.x, ridgidbody.mousePosition.y, 50, LIGHTGRAY, BLACK);
         
-
-        collision = CheckCollisionCircles(agent.ridgidbody.position, 60, circleA, 60);
-
-        if (collision)
-        {
-            // agent collision with circle on the screen
-            // if they collide then agent circle flees? from the circle on screen?
-
-            acceleration = Normalize(agent.ridgidbody.position - (circleA.x,circleA.y)) * speed - agent.ridgidbody.velocity;
-        }
 
         
         DrawLineV(ridgidbody.position, ridgidbody.position + agent.ridgidbody.velocity, RED);
