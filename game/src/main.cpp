@@ -114,7 +114,7 @@ int main(void)
  
         DrawText("Hello World!", 16, 9, 20, RED);
 
-        DrawCircleV(ridgidbody.position, 30, BLUE);
+        DrawCircleV(ridgidbody.position, 50, BLUE);
         DrawCircleV(circleA.position, 50, RED);
         DrawCircleGradient(ridgidbody.mousePosition.x, ridgidbody.mousePosition.y, 50, LIGHTGRAY, BLACK);
         
