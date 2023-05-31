@@ -112,7 +112,6 @@ int main(void)
 
         ridgidbody.position = WraparoundScreen(ridgidbody.position);
  
-        DrawText("Hello World!", 16, 9, 20, RED);
 
         DrawCircleV(ridgidbody.position, 50, BLUE);
         DrawCircleV(circleA.position, 50, RED);
@@ -128,6 +127,7 @@ int main(void)
 
 
 
+        DrawText("Hello World!", 16, 9, 20, RED);
         DrawFPS(1200, 10);
 
         EndDrawing();
