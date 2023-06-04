@@ -61,11 +61,11 @@ int main(void)
     agent.ridgidbody.velocity = { 10, 0 };
     agent.maxSpeed = 400.0f;
     agent.maxAcceleration = 800.0f;
-    Ridgidbody circleA = { SCREEN_WIDTH/2,SCREEN_HEIGHT/2 };
     rlImGuiSetup(true); // Sets up imgui
     Ridgidbody ridgidbody;
     ridgidbody.mousePosition = GetMousePosition();
 
+    Ridgidbody circleA = { SCREEN_WIDTH/2,SCREEN_HEIGHT/2 };
     Vector2 acceleration = { 10.0f, 0.0f };
     float speed = 500;
     float maxSpeed = 1000;
