@@ -28,6 +28,14 @@ int main(void)
         Vector2 rightWisk = Rotate(fromAgentToMouse, -15 * DEG2RAD);
         Vector2 leftWisk = Rotate(fromAgentToMouse, 15 * DEG2RAD);
 
+
+
+        RMAPI Vector2 Project(Vector2 rightWisk, Vector2 fromAgentToMouse);
+        {
+            float t = Dot(rightWisk, fromAgentToMouse) / Dot(fromAgentToMouse, fromAgentToMouse);
+            return { t * fromAgentToMouse.x, t * fromAgentToMouse.y };
+        }
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawCircleV(obsticle, radius, BLUE);
