@@ -30,11 +30,16 @@ int main(void)
 
 
 
-        RMAPI Vector2 Project(Vector2 rightWisk, Vector2 fromAgentToMouse);
+
+        RMAPI Vector2 NearestPoint(Vector2 fromAgentToMouse, Vector2 rightWisk, Vector2 mousePosition);
         {
-            float t = Dot(rightWisk, fromAgentToMouse) / Dot(fromAgentToMouse, fromAgentToMouse);
-            return { t * fromAgentToMouse.x, t * fromAgentToMouse.y };
+            Vector2 AB = Subtract(rightWisk, fromAgentToMouse);
+            float t = Dot(Subtract(mousePosition, fromAgentToMouse), AB) / Dot(AB, AB);
+            return  Add(fromAgentToMouse, Scale(AB, Clamp(t, 0.0f, 1.0f)));
         }
+
+
+
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
