@@ -1,9 +1,86 @@
 #include "rlImGui.h"
 #include "Math.h"
+#include <vector>
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
 
+bool CheckCollisionLineCircle(Vector2 lineStart, Vector2 lineEnd, Vector2 circlePosition, float circleRadius)
+{
+    Vector2 nearest = NearestPoint(lineStart, lineEnd, circlePosition);
+    return DistanceSqr(nearest, circlePosition) <= circleRadius * circleRadius;
+}
+
+struct Rigidbody
+{
+    Vector2 pos{};
+    Vector2 vel{};
+    Vector2 acc{};
+
+    Vector2 dir{};
+    float angularSpeed;
+};
+
+void Integrate(Rigidbody& rb, float dt)
+{
+    rb.vel = rb.vel + rb.acc * dt;
+    rb.pos = rb.pos + rb.vel * dt + rb.acc * dt * dt * 0.5;
+    rb.dir = RotateTowards(rb.dir, Normalize(rb.vel), rb.angularSpeed * dt);
+}
+
+Vector2 Seek(const Vector2& pos, const Rigidbody& rb, float maxSpeed)
+{
+    return Normalize(pos - rb.pos) * maxSpeed - rb.vel;
+}
+
+
+class Seeker
+{
+public:
+    Rigidbody rb;
+    float lineLength;
+    float radius;
+
+    Seeker(float startX, float startY, float angularSpeed, float lineLength, float radius)
+        : lineLength(lineLength), radius(radius)
+    {
+        rb.pos = { startX, startY };
+        rb.dir = { 0.0f, 1.0f };
+        rb.angularSpeed = angularSpeed;
+    }
+
+    void ObstacleAvoidance(const Vector2& obstaclePosition, float obstacleRadius, float avoidanceForce, float deltatime)
+    {
+        Vector2 right = Rotate(rb.dir, 15 * DEG2RAD);
+        Vector2 left = Rotate(rb.dir, -15 * DEG2RAD);
+        Vector2 rightWisk = rb.pos + right * lineLength;
+        Vector2 leftWisk = rb.pos + left * lineLength;
+
+        bool leftCollision = CheckCollisionLineCircle(rb.pos, leftWisk, obstaclePosition, obstacleRadius);
+        bool rightCollision = CheckCollisionLineCircle(rb.pos, rightWisk, obstaclePosition, obstacleRadius);
+
+        if (leftCollision || rightCollision)
+        {
+            Vector2 avoidanceDir = Normalize(rb.pos - obstaclePosition);
+            rb.acc = rb.acc + avoidanceDir * avoidanceForce;
+        }
+
+        if (leftCollision)
+        {
+            Vector2 linearDirection = Normalize(rb.vel);
+            float linearSpeed = Length(rb.vel);
+            rb.vel = Rotate(linearDirection, rb.angularSpeed * deltatime * DEG2RAD) * linearSpeed;
+        }
+
+        if (rightCollision)
+        {
+            Vector2 linearDirection = Normalize(rb.vel);
+            float linearSpeed = Length(rb.vel);
+            rb.vel = Rotate(linearDirection, -rb.angularSpeed * deltatime * DEG2RAD) * linearSpeed;
+        }
+
+    }
+};
 
 
 int main(void)
@@ -12,10 +89,14 @@ int main(void)
     rlImGuiSetup(true);
     SetTargetFPS(144);
 
-    const float radius = 25.0f;
-    Vector2 obsticle { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f };
-    Vector2 direction { 0.0f, 1.0f };
+    float radius = 25.0f;
+    float seekerWiskerLength = 100;
+    Seeker seeker(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, 100.0, 100.0, 25.0);
 
+
+    std::vector<Vector2> obstaclePositions;
+    Vector2 obstaclePosition{ SCREEN_WIDTH * 0.75, SCREEN_HEIGHT * 0.25};
+    float obstacleRadius = 50.0f;
 
 
 
@@ -23,41 +104,55 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-        Vector2 mousePosition = GetMousePosition();
-        Vector2 fromAgentToMouse = { 0,-1 }; // Normalize(mousePosition - obsticle);
-        Vector2 rightWisk = Rotate(fromAgentToMouse, -15 * DEG2RAD);
-        Vector2 leftWisk = Rotate(fromAgentToMouse, 15 * DEG2RAD);
+        const float deltaTime = GetFrameTime();
 
-
-
-
-        RMAPI Vector2 NearestPoint(Vector2 fromAgentToMouse, Vector2 rightWisk, Vector2 mousePosition);
+        seeker.rb.acc = Seek(GetMousePosition(), seeker.rb, 100);
+        Integrate(seeker.rb, deltaTime);
+        
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            Vector2 AB = Subtract(rightWisk, fromAgentToMouse);
-            float t = Dot(Subtract(mousePosition, fromAgentToMouse), AB) / Dot(AB, AB);
-            return  Add(fromAgentToMouse, Scale(AB, Clamp(t, 0.0f, 1.0f)));
+            obstaclePositions.push_back(GetMousePosition());
         }
 
+        for (const auto& obstaclePosition : obstaclePositions)
+        {
+            seeker.ObstacleAvoidance(obstaclePosition, 50.0, 100.0, deltaTime);
+        }
 
+        DrawCircleV(seeker.rb.pos, seeker.radius, BLUE);
+        for (const auto& obstaclePosition : obstaclePositions)
+        {
+            DrawCircleV(obstaclePosition, 25, BLUE);
+        }
+        
+        Vector2 right = Rotate(seeker.rb.dir, 15.0 * DEG2RAD);
+        Vector2 left = Rotate(seeker.rb.dir, -15.0 * DEG2RAD);
+        Vector2 rightWisk = seeker.rb.pos + right * seekerWiskerLength;
+        Vector2 leftWisk = seeker.rb.pos + left * seekerWiskerLength;
+        bool leftCollision = false;
+        bool rightCollision = false;
+
+        for (const auto& obstaclePosition : obstaclePositions)
+        {
+            leftCollision = CheckCollisionLineCircle(seeker.rb.pos, leftWisk, obstaclePosition, obstacleRadius);
+            rightCollision = CheckCollisionLineCircle(seeker.rb.pos, rightWisk, obstaclePosition, obstacleRadius);
+        }
+        Color rightColor = rightCollision ? RED : GREEN;
+        Color leftColor = leftCollision ? RED : GREEN;
+        DrawLineV(seeker.rb.pos, rightWisk, rightColor);
+        DrawLineV(seeker.rb.pos, leftWisk, leftColor);
+        
 
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawCircleV(obsticle, radius, BLUE);
-        DrawCircleV(mousePosition, radius, RED);
- 
-        DrawLineV(obsticle, obsticle + fromAgentToMouse *100, BLACK);
-        DrawLineV(obsticle, obsticle + rightWisk *100, GREEN);
-        DrawLineV(obsticle, obsticle + leftWisk *100, GREEN);
+        DrawCircleV(seeker.rb.pos, radius, RED);
 
-
-
-
-        HideCursor();
+        
 
 
         
-        DrawText("Hello World!", 16, 9, 20, RED);
+        DrawText("Hello World!", 16, 9, 20, BLACK);
         DrawFPS(1200, 10);
 
         EndDrawing();
