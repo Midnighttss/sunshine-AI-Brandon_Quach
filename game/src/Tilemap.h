@@ -41,13 +41,20 @@ public:
 	}
 
 
-	void Randomize()
+	void Randomize(int chanceOfWall=50)
 	{
 		for (int x = 0; x < MAP_WIDTH; x++)
 		{
 			for (int y = 0; y < MAP_HEIGHT; y++)
 			{
-				tiles[x][y] = (Tile)(rand() % (int)Tile::count);
+				if (rand()%100+1<chanceOfWall)
+				{
+					tiles[x][y] = Tile::wall;
+				}
+				else
+				{
+					tiles[x][y] = Tile::floor;
+				}
 			}
 		}
 	}
