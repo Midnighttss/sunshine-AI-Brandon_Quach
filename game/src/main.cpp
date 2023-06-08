@@ -173,7 +173,7 @@ int main(void)
         DrawLineV(seeker.rb.pos, topWisk, topColor);
         DrawLineV(seeker.rb.pos, bottomWisk, bottomColor);
         
-
+        
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
