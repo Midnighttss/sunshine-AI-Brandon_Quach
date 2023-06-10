@@ -1,6 +1,7 @@
 #include "rlImGui.h"
 #include <time.h>
 #include"Tilemap.h"
+#include<vector>
 
 
 #define SCREEN_WIDTH 1280
@@ -9,6 +10,23 @@
       
 Tilemap map;
 
+std::vector<Vector2> GetWalkableTileAdjacentTo(Vector2 tileposition) 
+{
+    std::vector<Vector2> adjacentTilePosition;
+
+    //North,South,East,West
+    Vector2 N = tileposition + NORTH;
+    Vector2 S = tileposition + SOUTH;
+    Vector2 E = tileposition + EAST;
+    Vector2 W= tileposition + WEST;
+
+    if (IsWalkable(N)) adjacentTilePosition.push_back(N);
+    if (IsWalkable(S)) adjacentTilePosition.push_back(S);
+    if (IsWalkable(E)) adjacentTilePosition.push_back(E);
+    if (IsWalkable(W)) adjacentTilePosition.push_back(W);
+    
+    return adjacentTilePosition;
+}
 
 int main(void)
 {

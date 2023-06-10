@@ -25,6 +25,7 @@ public:
 	float tileSizeY = 24;
 	Color tileColors[(int)Tile::count];
 
+	Tile GetTile(int x, int y);
 
 	Tile tiles [MAP_WIDTH][MAP_HEIGHT];
 	Vector2 GetScreenPositionOfTile(TileCoord coordinate)
@@ -41,7 +42,7 @@ public:
 	}
 
 
-	void Randomize(int chanceOfWall=50)
+	void Randomize(int chanceOfWall=20)
 	{
 		for (int x = 0; x < MAP_WIDTH; x++)
 		{
@@ -58,6 +59,15 @@ public:
 			}
 		}
 	}
+
+
+	bool IsWalkable(Vector2 tileposition)
+	{
+		if (IsWalkable(tileposition))
+		{
+			if (GetTile(tileposition.x, tileposition.y) == Tile::floor)return true;
+		}
+	};
 
 	void Draw()
 	{
