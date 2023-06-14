@@ -26,7 +26,7 @@ public:
 	float tileSizeY = 30;
 	Color tileColors[(int)Tile::count];
 
-	TileCoord playerPosition;
+	TileCoord positionOfPlayer;
 
 	Tile GetTile(int x, int y);
 
@@ -90,7 +90,7 @@ public:
 				playerY = rand() % MAP_HEIGHT;
 				playerX = rand() % MAP_WIDTH;
 			} while (tiles[playerX][playerY] !=Tile::floor);
-
+			positionOfPlayer = TileCoord(playerX, playerY);
 		}
 	}
 
@@ -109,7 +109,7 @@ public:
 
 				DrawRectangle(x * tileSizeX, y * tileSizeY, tileSizeX, tileSizeY, tileColor);
 
-				Vector2 playerPositionOnScreen = GetScreenPositionOfTile(playerPosition);
+				Vector2 playerPositionOnScreen = GetScreenPositionOfTile(positionOfPlayer);
 				DrawRectangle(static_cast<int>(playerPositionOnScreen.x), static_cast<int>(playerPositionOnScreen.y), tileSizeX, tileSizeY, BLUE);
 			}
 		}
