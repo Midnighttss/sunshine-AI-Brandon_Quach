@@ -10,23 +10,7 @@
       
 Tilemap map;
 
-std::vector<Vector2> GetWalkableTileAdjacentTo(Vector2 tileposition) 
-{
-    std::vector<Vector2> adjacentTilePosition;
 
-    //North,South,East,West
-    Vector2 N = tileposition + NORTH;
-    Vector2 S = tileposition + SOUTH;
-    Vector2 E = tileposition + EAST;
-    Vector2 W= tileposition + WEST;
-
-    if (IsWalkable(N)) adjacentTilePosition.push_back(N);
-    if (IsWalkable(S)) adjacentTilePosition.push_back(S);
-    if (IsWalkable(E)) adjacentTilePosition.push_back(E);
-    if (IsWalkable(W)) adjacentTilePosition.push_back(W);
-    
-    return adjacentTilePosition;
-}
 
 int main(void)
 {
@@ -36,7 +20,7 @@ int main(void)
     rlImGuiSetup(true);
 
     bool useGUI = false;
-    SetTargetFPS(60);
+    SetTargetFPS(144);
 
     while (!WindowShouldClose())
     {
@@ -44,6 +28,19 @@ int main(void)
         map.Draw();
         BeginDrawing();
         ClearBackground(RAYWHITE);
+
+        if (IsKeyPressed(KEY_W) && map.isTileWalkable(map.playerPosition - TileCoord(0, 1)))
+            map.playerPosition -= TileCoord(0, 1);
+        if (IsKeyPressed(KEY_S) && map.isTileWalkable(map.playerPosition + TileCoord(0, 1)))
+            map.playerPosition += TileCoord(0, 1);
+        if (IsKeyPressed(KEY_A) && map.isTileWalkable(map.playerPosition - TileCoord(1, 0)))
+            map.playerPosition -= TileCoord(1, 0);
+        if (IsKeyPressed(KEY_D) && map.isTileWalkable(map.playerPosition + TileCoord(1, 0)))
+            map.playerPosition += TileCoord(1, 0);
+
+        
+        
+
 
         if (IsKeyPressed(KEY_GRAVE)) useGUI = !useGUI;
         if (useGUI)
@@ -54,6 +51,58 @@ int main(void)
                 map.Randomize();
             }
             rlImGuiEnd();
+       
+           for (int x = 0; x < MAP_WIDTH; x++)
+           {
+               for (int y = 0; y < MAP_HEIGHT; y++)
+               {
+                   if (map.isTileWalkable(TileCoord(x, y)))
+                   {
+                       Vector2 centerOfTile = map.GetScreenPositionOfTile(TileCoord(x, y)) + Vector2{ map.tileSizeX / 2, map.tileSizeY / 2 };
+
+                       int xAdjacent = 0;
+                       int yAdjacent = 0;
+
+                       
+                       xAdjacent = x;
+                       yAdjacent = y - 1;
+                       if (yAdjacent >= 0 && map.isTileWalkable(TileCoord(xAdjacent, yAdjacent)))
+                       {
+                           Vector2 adjacentTileCenter = map.GetScreenPositionOfTile(TileCoord(xAdjacent, yAdjacent)) + Vector2{ map.tileSizeX / 2, map.tileSizeY / 2 };
+                           DrawLineEx(centerOfTile, adjacentTileCenter, 1, GREEN);
+                       }
+
+                       
+                       xAdjacent = x;
+                       yAdjacent = y + 1;
+                       if (yAdjacent < MAP_HEIGHT && map.isTileWalkable(TileCoord(xAdjacent, yAdjacent)))
+                       {
+                           Vector2 adjacentTileCenter = map.GetScreenPositionOfTile(TileCoord(xAdjacent, yAdjacent)) + Vector2{ map.tileSizeX / 2, map.tileSizeY / 2 };
+                           DrawLineEx(centerOfTile, adjacentTileCenter, 1, GREEN);
+                       }
+
+                       
+                       xAdjacent = x + 1;
+                       yAdjacent = y;
+                       if (xAdjacent < MAP_WIDTH && map.isTileWalkable(TileCoord(xAdjacent, yAdjacent)))
+                       {
+                           Vector2 adjacentTileCenter = map.GetScreenPositionOfTile(TileCoord(xAdjacent, yAdjacent)) + Vector2{ map.tileSizeX / 2, map.tileSizeY / 2 };
+                           DrawLineEx(centerOfTile, adjacentTileCenter, 1, GREEN);
+                       }
+
+                       
+                       xAdjacent = x - 1;
+                       yAdjacent = y;
+                       if (xAdjacent >= 0 && map.isTileWalkable(TileCoord(xAdjacent, yAdjacent)))
+                       {
+                           Vector2 adjacentTileCenter = map.GetScreenPositionOfTile(TileCoord(xAdjacent, yAdjacent)) + Vector2{ map.tileSizeX / 2, map.tileSizeY / 2 };
+                           DrawLineEx(centerOfTile, adjacentTileCenter, 1, GREEN);
+                       }
+
+                       DrawCircle(static_cast<int>(centerOfTile.x), static_cast<int>(centerOfTile.y), 5, GREEN);
+                   }
+               }
+           }
         }
 
         DrawText("Hello World!", 16, 9, 20, RED);
