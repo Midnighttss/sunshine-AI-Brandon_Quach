@@ -65,7 +65,7 @@ public:
 	}
 
 
-	void Randomize(int chanceOfWall=20)
+	void Randomize(int chanceOfWall=30)
 	{
 		for (int x = 0; x < MAP_WIDTH; x++)
 		{
