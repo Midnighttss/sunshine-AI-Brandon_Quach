@@ -3,7 +3,7 @@
 #include "TileCoord.h"
 
 #define MAP_WIDTH 32
-#define MAP_HEIGHT 30
+#define MAP_HEIGHT 22
 
 
 
@@ -23,7 +23,7 @@ private:
 
 public:
 	float tileSizeX = 32;
-	float tileSizeY = 30;
+	float tileSizeY = 32;
 	Color tileColors[(int)Tile::count];
 
 	TileCoord positionOfPlayer;
