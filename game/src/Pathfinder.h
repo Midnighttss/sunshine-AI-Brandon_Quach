@@ -46,6 +46,57 @@ private:
 		unvisited[startNode] = 0;
 	}
 
+	std::pair<TileCoord, float> GetLowestCostIn(std::unordered_map<TileCoord, float> set)
+	{
+		TileCoord cheapestPosition = { -1,-1 };
+		float lowestCost = INFINITY;
+		for (auto nodeValuepair:set)
+		{
+			TileCoord tile = nodeValuepair.first;
+			float cost = nodeValuepair.second;
+
+
+			if (cost<lowestCost)
+			{
+				cheapestPosition = tile;
+				lowestCost = cost;
+			}
+		}
+		return  { cheapestPosition, lowestCost };
+	}
+
+	bool IsVisited(TileCoord pos)const{ return visited.count(pos); }
+	bool IsSolved()const { return IsVisited(endNode); }
+	bool IsCompleted() { return IsVisited(endNode) || GetLowestCostIn(unvisited).second == INFINITY; }
+
+
+	void ProcessNextIterationFunctional()
+	{
+		if (IsCompleted()) return;
+		currentNode = GetLowestCostIn(unvisited).first;
+
+		MoveToVisitiedSet(currentNode);
+	}
+
+	void MoveToVisitiedSet(TileCoord node)
+	{
+		visited[currentNode] = unvisited[currentNode];
+		unvisited.erase(currentNode);
+	}
+
+
+	bool SolvePath()
+	{
+		Restart();
+		while (!IsCompleted())
+		{
+			ProcessNextIterationFunctional();
+		}
+
+		return IsSolved();
+	}
 
 
 };
+
+
