@@ -57,7 +57,41 @@ public:
 	{
 
 	}
-	
+	Tile GetTile(TileCoord tilePos); // get the tile at the specified coordinate in the grid
+
+	void SetTile(TileCoord tilePos, Tile value);  // set the tile at the specified coordinate in the grid
+
+	bool ContainsTile(TileCoord tilePosition); // returns true if the coordinate is inside the grid, false otherwise
+
+	bool IsTraversableAt(TileCoord tilePosition); // Returns true if the specified tile is in the level and walkable, false otherwise
+
+	int GetCostForTile(TileCoord tilePositon)  // having this function makes it easier to change costs per tile the future
+	{
+		return 1;
+	}
+
+	Vector2 GetScreenPosOfTileCentered(TileCoord tilePos); //Convert from a tile coordinate to a screen position in middle of tile
+
+	Vector2 GetScreenPosOfTile(TileCoord tilePosition); //Convert from a tile coordinate to a screen position at top left corner of tile
+
+	TileCoord GetTileAtScreenPos(Vector2 positionOnScreen); //Find a tile coordinate given a position on the screen over a tile
+
+	std::vector<TileCoord> GetAllTiles(); // return all tile positions
+
+
+	std::vector<TileCoord> GetTraversableTilesAdjacentTo(TileCoord tilePos); // For a given TileCoord, return all TileCoords which are adjacent and are traversable
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	// Drawing functions ////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////
+
+	void DrawTiles(); // Draw all tiles
+
+	void DrawBorders(Color color = BLACK); // Draw lines between tiles
+
+	void DrawAdjacencies(); // Draw lines indicating which tiles are connected to which others
+
+	void DrawCoordinates(); // Write the TileCoordinate on each tile
 
 	bool isTileWalkable(TileCoord coords)
 	{

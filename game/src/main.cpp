@@ -2,7 +2,7 @@
 #include <time.h>
 #include"Tilemap.h"
 #include<vector>
-
+#include "Pathfinder.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -96,10 +96,62 @@ int main(void)
                     }
 
                     DrawCircle(centerOfTile.x,centerOfTile.y, 5, GREEN);
+
                 }
             }
         }
 
+       /* TileCoord mouseTilePos = map.GetScreenPositionOfTile(GetMousePosition());
+        if (map.ContainsTile(mouseTilePos))
+        {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+            {
+                pathfinder = Pathfinder(&map, agent.tilePosition, TileCoord(mouseTilePos));
+            }
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+            {
+                pathfinder = Pathfinder(&map, agent.tilePosition, TileCoord(mouseTilePos));
+                pathfinder.SolvePath();
+            }
+        }
+        if (pathfinder.map != nullptr)
+        {
+            if (IsKeyPressed(KEY_SPACE))
+            {
+                pathfinder.ProcessNextIterationFunctional();
+            }
+            if (drawPathInfo) pathfinder.DrawCurrentState();
+        }
+
+        void ProcessNextIterationFunctional()
+        {
+            if (IsCompleted()) return;
+            currentNode = GetLowestCostIn(unvisited).first;
+
+            for (auto adjacent : map->GetWalkableTilesAdjacentTo(currntNode))
+            {
+                    if (IsVisited(adjacent)) continue;
+                float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
+
+                float oldCost = GetTotalCostToReach(adjacent);
+                if (costThisWay < oldCost)
+                {
+                    SetCostToReach(adjacent, costThisWay);
+                    cheapestEdgeTo[adjacent] = currentNode;
+                }
+            }
+            MoveToVisitedSet(currntNode);
+
+        }
+
+        float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
+        void SetCostToReach(TileCoord pos, float newCost)
+        {
+            unvisited[pos] = newCost;
+        }
+
+       
+*/
 
         DrawText("Please be kind on \nmarking for the \nforseeable future =)\n WASD for movement", 1050, 9, 20, RED);
 
