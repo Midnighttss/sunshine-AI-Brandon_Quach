@@ -18,7 +18,7 @@ private:
 	TileCoord endNode;
 	TileCoord currentNode;
 	
-
+public:
 	Pathfinder()
 	{
 
@@ -98,5 +98,3 @@ private:
 
 
 };
-
-

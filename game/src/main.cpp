@@ -3,6 +3,7 @@
 #include"Tilemap.h"
 #include<vector>
 #include "Pathfinder.h"
+#include <unordered_map>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -13,9 +14,9 @@ Pathfinder pathfinder;
 void ProcessNextIterationFunctional()
 {
     if (IsCompleted()) return;
-    currentNode = GetLowestCostIn(unvisited).first;
+    TileCoord currentNode = GetLowestCostIn(unvisited).first;
 
-    for (auto adjacent : map->GetWalkableTilesAdjacentTo(currntNode))
+    for (auto adjacent : map->GetWalkableTilesAdjacentTo(currentNode))
     {
         if (IsVisited(adjacent)) continue;
         float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
@@ -27,11 +28,15 @@ void ProcessNextIterationFunctional()
             cheapestEdgeTo[adjacent] = currentNode;
         }
     }
-    MoveToVisitedSet(currntNode);
+    MoveToVisitedSet(currentNode);
 
 }
-
 float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
+
+   
+
+
+
 void SetCostToReach(TileCoord pos, float newCost)
 {
    unvisited[pos] = newCost;
@@ -150,10 +155,6 @@ int main(void)
         }
 
         ProcessNextIterationFunctional();
-        
-
-       
-
 
         DrawText("Please be kind on \nmarking for the \nforseeable future =)\n WASD for movement", 1050, 9, 20, RED);
 
