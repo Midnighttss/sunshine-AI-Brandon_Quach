@@ -9,7 +9,33 @@
 
       
 Tilemap map;
+Pathfinder pathfinder;
+void ProcessNextIterationFunctional()
+{
+    if (IsCompleted()) return;
+    currentNode = GetLowestCostIn(unvisited).first;
 
+    for (auto adjacent : map->GetWalkableTilesAdjacentTo(currntNode))
+    {
+        if (IsVisited(adjacent)) continue;
+        float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
+
+        float oldCost = GetTotalCostToReach(adjacent);
+        if (costThisWay < oldCost)
+        {
+            SetCostToReach(adjacent, costThisWay);
+            cheapestEdgeTo[adjacent] = currentNode;
+        }
+    }
+    MoveToVisitedSet(currntNode);
+
+}
+
+float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
+void SetCostToReach(TileCoord pos, float newCost)
+{
+   unvisited[pos] = newCost;
+}
 
 
 int main(void)
@@ -101,16 +127,16 @@ int main(void)
             }
         }
 
-       /* TileCoord mouseTilePos = map.GetScreenPositionOfTile(GetMousePosition());
+        TileCoord mouseTilePos = map.GetScreenPositionOfTile(GetMousePosition());
         if (map.ContainsTile(mouseTilePos))
         {
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
             {
-                pathfinder = Pathfinder(&map, agent.tilePosition, TileCoord(mouseTilePos));
+                pathfinder = Pathfinder(&map, map.positionOfPlayer, TileCoord(mouseTilePos));
             }
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
-                pathfinder = Pathfinder(&map, agent.tilePosition, TileCoord(mouseTilePos));
+                pathfinder = Pathfinder(&map, map.positionOfPlayer, TileCoord(mouseTilePos));
                 pathfinder.SolvePath();
             }
         }
@@ -123,35 +149,11 @@ int main(void)
             if (drawPathInfo) pathfinder.DrawCurrentState();
         }
 
-        void ProcessNextIterationFunctional()
-        {
-            if (IsCompleted()) return;
-            currentNode = GetLowestCostIn(unvisited).first;
-
-            for (auto adjacent : map->GetWalkableTilesAdjacentTo(currntNode))
-            {
-                    if (IsVisited(adjacent)) continue;
-                float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
-
-                float oldCost = GetTotalCostToReach(adjacent);
-                if (costThisWay < oldCost)
-                {
-                    SetCostToReach(adjacent, costThisWay);
-                    cheapestEdgeTo[adjacent] = currentNode;
-                }
-            }
-            MoveToVisitedSet(currntNode);
-
-        }
-
-        float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
-        void SetCostToReach(TileCoord pos, float newCost)
-        {
-            unvisited[pos] = newCost;
-        }
+        ProcessNextIterationFunctional();
+        
 
        
-*/
+
 
         DrawText("Please be kind on \nmarking for the \nforseeable future =)\n WASD for movement", 1050, 9, 20, RED);
 
