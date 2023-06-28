@@ -56,7 +56,7 @@ public:
 	std::vector<TileCoord> GetAllTraversableTiles()
 	{
 
-	};
+	}
 	
 
 	bool isTileWalkable(TileCoord coords)
