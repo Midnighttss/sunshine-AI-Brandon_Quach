@@ -1,6 +1,7 @@
 #pragma once
 #include"raylib.h"
 #include "TileCoord.h"
+#include<vector>
 
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 22
@@ -50,8 +51,12 @@ public:
 
 		isWalkable[(int)Tile::floor] = true;
 
-	}
+	};
 
+	std::vector<TileCoord> GetAllTraversableTiles()
+	{
+
+	};
 	
 
 	bool isTileWalkable(TileCoord coords)
