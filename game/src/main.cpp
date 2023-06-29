@@ -11,36 +11,7 @@
       
 Tilemap map;
 Pathfinder pathfinder;
-void ProcessNextIterationFunctional()
-{
-    if (IsCompleted()) return;
-    TileCoord currentNode = GetLowestCostIn(unvisited).first;
 
-    for (auto adjacent : map->GetWalkableTilesAdjacentTo(currentNode))
-    {
-        if (IsVisited(adjacent)) continue;
-        float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
-
-        float oldCost = GetTotalCostToReach(adjacent);
-        if (costThisWay < oldCost)
-        {
-            SetCostToReach(adjacent, costThisWay);
-            cheapestEdgeTo[adjacent] = currentNode;
-        }
-    }
-    MoveToVisitedSet(currentNode);
-
-}
-float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
-
-   
-
-
-
-void SetCostToReach(TileCoord pos, float newCost)
-{
-   unvisited[pos] = newCost;
-}
 
 
 int main(void)
@@ -132,8 +103,9 @@ int main(void)
             }
         }
 
+
         TileCoord mouseTilePos = map.GetScreenPositionOfTile(GetMousePosition());
-        if (map.ContainsTile(mouseTilePos))
+        /*if (map.ContainsTile(mouseTilePos))
         {
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
             {
@@ -151,10 +123,8 @@ int main(void)
             {
                 pathfinder.ProcessNextIterationFunctional();
             }
-            if (drawPathInfo) pathfinder.DrawCurrentState();
-        }
-
-        ProcessNextIterationFunctional();
+            
+        }*/ 
 
         DrawText("Please be kind on \nmarking for the \nforseeable future =)\n WASD for movement", 1050, 9, 20, RED);
 

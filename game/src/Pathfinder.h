@@ -70,13 +70,27 @@ public:
 	bool IsCompleted() { return IsVisited(endNode) || GetLowestCostIn(unvisited).second == INFINITY; }
 
 
-	void ProcessNextIterationFunctional()
+	/*void ProcessNextIterationFunctional()
 	{
 		if (IsCompleted()) return;
 		currentNode = GetLowestCostIn(unvisited).first;
+		TileCoord currentNode = GetLowestCostIn(unvisited).first;
+
+		for (auto adjacent : map->GetTraversableTilesAdjacentTo(currentNode))
+		{
+			if (IsVisited(adjacent)) continue;
+			float costThisWay = GetTotalCostToReach(currentNode) + map->GetCostForTile(adjacent);
+
+			float oldCost = GetTotalCostToReach(adjacent);
+			if (costThisWay < oldCost)
+			{
+				SetCostToReach(adjacent, costThisWay);
+				cheapestEdgeTo[adjacent] = currentNode;
+			}
+		}
 
 		MoveToVisitiedSet(currentNode);
-	}
+	}*/
 
 	void MoveToVisitiedSet(TileCoord node)
 	{
@@ -90,11 +104,30 @@ public:
 		Restart();
 		while (!IsCompleted())
 		{
-			ProcessNextIterationFunctional();
+			//ProcessNextIterationFunctional();
 		}
 
 		return IsSolved();
 	}
 
+	
+	float GetTotalCostToReach(TileCoord pos) { return unvisited[pos]; }
+
+	void SetCostToReach(TileCoord pos, float newCost)
+	{
+		unvisited[pos] = newCost;
+	}
+
+	std::list<TileCoord> Getsolution()
+	{
+		std::list<TileCoord>solution;
+		auto currentNode = endNode;
+		while (currentNode!=startNode)
+		{
+			solution.push_front(currentNode);
+			currentNode = cheapestEdgeTo[currentNode];
+		}
+		return solution;
+	}
 
 };
